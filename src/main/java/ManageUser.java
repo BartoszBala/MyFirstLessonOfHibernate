@@ -1,9 +1,5 @@
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 
@@ -24,14 +20,22 @@ public class ManageUser {
         }
 
         ManageUser manageUser = new ManageUser();
-//        Integer userId = manageUser.addUser("wariat", "wariat@gmail.com", "qeoipwjrijrgwij923");
+        //Integer userId = manageUser.addUser("superkolo", "michal2005k@gmail.com", "qeoipwjrijrfewwffgwij923");
 
         List<User> list = manageUser.fetchUsersFromDB();
-        System.out.println("number of user in db:"+list.size());
+        System.out.println("number of user in db:" + list.size());
 
-      list.stream().forEach(System.out::println);
+        list.stream().forEach(System.out::println);
+        Session session = sessionFactory.openSession();
+        List<User> users;
+        String sql= "SELECT * from USERS1 WHERE id>5";
+        SQLQuery query = session.createSQLQuery(sql);
+     users =query.list();
 
-      sessionFactory.close();
+        System.out.println(users
+                .size());
+
+        sessionFactory.close();
     }
 
     public List<User> fetchUsersFromDB() {
@@ -39,10 +43,10 @@ public class ManageUser {
         List<User> users;
 
         Session session = sessionFactory.openSession();
-        Transaction transaction = null;
+//        Transaction transaction = null;
         String sql_query = "from User";
         Query query = session.createQuery(sql_query);
-        users =query.list();
+        users = query.list();
         return users;
 
     }
