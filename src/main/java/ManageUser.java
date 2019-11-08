@@ -1,5 +1,6 @@
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 
 
@@ -25,16 +26,38 @@ public class ManageUser {
         List<User> list = manageUser.fetchUsersFromDB();
         System.out.println("number of user in db:" + list.size());
 
-        list.stream().forEach(System.out::println);
+        // list.stream().forEach(System.out::println);
         Session session = sessionFactory.openSession();
         List<User> users;
-        String sql= "SELECT * from USERS1 WHERE id>5";
-        SQLQuery query = session.createSQLQuery(sql);
-     users =query.list();
+//        String sql= "SELECT * from USERS1 WHERE id>5";
+//    SQLQuery query = session.createSQLQuery(sql); //  to jest przestarzały typ zapytań
 
-        System.out.println(users
-                .size());
+        //   NativeQuery nativeQuery = session.createNativeQuery("SELECT * from USERS1 WHERE id>5");
+        // users= nativeQuery.list();
 
+
+//     users =query.list();
+
+
+//        System.out.println(users
+//                .size());
+
+//        users.stream().forEach(x-> System.out.println(x));
+
+        System.out.println("*********wszystkie nicki w bazie*****");
+        manageUser.returnAllnick().stream().forEach(x -> System.out.println(x));
+
+        System.out.println("*********wszystkie maile w bazie*****");
+        manageUser.returnAllemail().stream().forEach(x -> System.out.println(x));
+
+
+        manageUser.searchUserbyEmail("jadzia1970@wp.com").stream().forEach(x-> System.out.println(x));
+
+        Date date = new Date("2019/11/01");
+
+
+        System.out.println("uzytkownicy zarejestrowani po "+date);
+        manageUser.findUserRegisterAfterDate(date).stream().forEach(System.out::println);
         sessionFactory.close();
     }
 
@@ -47,7 +70,67 @@ public class ManageUser {
         String sql_query = "from User";
         Query query = session.createQuery(sql_query);
         users = query.list();
+        session.close();
         return users;
+
+    }
+
+    public List<String> returnAllnick() {
+        List<String> list;
+
+        Session session = sessionFactory.openSession();
+
+        Query query = session.createQuery("select user.nick from User user");
+
+
+        list = query.list();
+        session.close();
+        return list;
+
+
+    }
+
+    public List<String> returnAllemail() {
+        List<String> list;
+
+        Session session = sessionFactory.openSession();
+
+        Query query = session.createQuery("select user.email from User user");
+
+
+        list = query.list();
+        session.close();
+        return list;
+
+
+    }
+
+    public List<User> searchUserbyEmail(String email)
+    {List<User> users;
+
+    Session session = sessionFactory.openSession();
+    Query query =session.createQuery("select user from User user where user.email=: email");
+    query.setParameter("email",email);
+
+    users=query.list();
+    session.close();
+    return users;
+
+
+    }
+
+    public List<User> findUserRegisterAfterDate(Date date)
+    {List<User> users;
+
+    Session session =sessionFactory.openSession();
+
+    Query query = session.createQuery("select user from User user where user.dateOfFirstRegister>:date");
+
+    query.setParameter("date",date);
+
+    users=query.list();
+    session.close();
+    return users;
 
     }
 
@@ -59,7 +142,7 @@ public class ManageUser {
         Integer userID = null;
         Date today = new Date();
         try {
-            tx = session.beginTransaction();   //fixme (why transction is to cast)
+            tx = session.beginTransaction();
             User user = new User(email, nick, password, today);
             userID = (Integer) session.save(user);
             tx.commit();

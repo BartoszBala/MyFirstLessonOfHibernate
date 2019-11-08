@@ -13,7 +13,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @SequenceGenerator(name="SEQUENCE1",sequenceName = "SEQUENCE1",allocationSize = 1)
-    private  int id;
+    public  int id;
 
     public int getId() {
         return id;
