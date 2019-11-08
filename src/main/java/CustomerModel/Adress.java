@@ -1,5 +1,7 @@
 package CustomerModel;
+import javax.persistence.*;
 
+//@Embeddable
 public class Adress {
 
     private String country;

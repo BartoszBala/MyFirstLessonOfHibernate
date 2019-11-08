@@ -64,6 +64,7 @@ public class ManageUser {
 
 
         manageUser.updateNick("Balik123111",120);
+        System.out.println("usunięto: "+manageUser.removeUserFromDB(45)+" rekordów");
     }
 
     public List<User> fetchUsersFromDB() {
@@ -173,6 +174,23 @@ public class ManageUser {
             session.close();
         }
         return userID;
+
+    }
+
+    public int removeUserFromDB(int id)
+    {Session session=sessionFactory.openSession();
+    Transaction tx;
+    tx = session.beginTransaction();
+    Query query= session.createQuery("delete from User user where user.id=:iduser");
+    query.setParameter("iduser",id);
+
+    int rowsdeleted =query.executeUpdate();
+    tx.commit();
+    session.close();
+
+    return rowsdeleted;
+
+
 
     }
 }

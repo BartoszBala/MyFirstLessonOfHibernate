@@ -31,6 +31,8 @@
 <!--        <mapping resource = "User.hbm.xml"/>-->
 
         <mapping class="User"/>
+        <mapping class="CustomerModel.Client"/>
+        <mapping class="CustomerModel.ClientPassword"/>
 
     </session-factory>
 </hibernate-configuration>
