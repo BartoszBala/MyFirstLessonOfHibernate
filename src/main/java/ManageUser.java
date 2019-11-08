@@ -6,6 +6,9 @@ import org.hibernate.query.Query;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ManageUser {
 
@@ -51,14 +54,16 @@ public class ManageUser {
         manageUser.returnAllemail().stream().forEach(x -> System.out.println(x));
 
 
-        manageUser.searchUserbyEmail("jadzia1970@wp.com").stream().forEach(x-> System.out.println(x));
+        manageUser.searchUserbyEmail("jadzia1970@wp.com").stream().forEach(x -> System.out.println(x));
 
         Date date = new Date("2019/11/01");
 
 
-        System.out.println("uzytkownicy zarejestrowani po "+date);
+        System.out.println("uzytkownicy zarejestrowani po " + date);
         manageUser.findUserRegisterAfterDate(date).stream().forEach(System.out::println);
-        sessionFactory.close();
+
+
+        manageUser.updateNick("Balik123111",120);
     }
 
     public List<User> fetchUsersFromDB() {
@@ -105,32 +110,47 @@ public class ManageUser {
 
     }
 
-    public List<User> searchUserbyEmail(String email)
-    {List<User> users;
+    public void updateNick(String nick, int id) {
+        Session session = sessionFactory.openSession();
 
-    Session session = sessionFactory.openSession();
-    Query query =session.createQuery("select user from User user where user.email=: email");
-    query.setParameter("email",email);
+        Transaction tx;
+        tx = session.beginTransaction();
+        String hqlQuery = "update User user set user.nick=:nick where user.id=:id";
+        Query query = session.createQuery(hqlQuery);
+        query.setParameter("nick",nick).setParameter("id",id);
+        int modification = query.executeUpdate();
+        System.out.println("numberOfModification:"+modification);
+        tx.commit();
+        session.close();
 
-    users=query.list();
-    session.close();
-    return users;
+    }
+
+    public List<User> searchUserbyEmail(String email) {
+        List<User> users;
+
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("select user from User user where user.email=: email");
+        query.setParameter("email", email);
+
+        users = query.list();
+        session.close();
+        return users;
 
 
     }
 
-    public List<User> findUserRegisterAfterDate(Date date)
-    {List<User> users;
+    public List<User> findUserRegisterAfterDate(Date date) {
+        List<User> users;
 
-    Session session =sessionFactory.openSession();
+        Session session = sessionFactory.openSession();
 
-    Query query = session.createQuery("select user from User user where user.dateOfFirstRegister>:date");
+        Query query = session.createQuery("select user from User user where user.dateOfFirstRegister>:date");
 
-    query.setParameter("date",date);
+        query.setParameter("date", date);
 
-    users=query.list();
-    session.close();
-    return users;
+        users = query.list();
+        session.close();
+        return users;
 
     }
 
