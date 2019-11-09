@@ -1,16 +1,23 @@
 package CustomerModel;
 import javax.persistence.*;
 
-//@Embeddable
+@Embeddable
 public class Adress {
-
+    @Column(name="country")
     private String country;
+    @Column(name="city")
     private String city;
+    @Column(name="postCode")
     private String postCode;
+    @Column(name="street")
     private String street;
+    @Column(name="numberOfResidance")
     private String numberOfResidence;
+    @Column(name="numberOfApartment")
     private String numberOfAppartment;
 
+    public Adress() {
+    }
 
     public Adress(String country, String city, String postCode, String street, String numberOfResidence, String numberOfAppartment) {
         this.country = country;

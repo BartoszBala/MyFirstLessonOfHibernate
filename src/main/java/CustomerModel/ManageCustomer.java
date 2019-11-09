@@ -22,12 +22,14 @@ public class ManageCustomer {
         }
         ManageCustomer manageCustomer = new ManageCustomer();
 
-        manageCustomer.addClient("901212d09123","ANNia","Kowalska123");
+        Adress ad1 = new Adress("Poland", "Lodz","93-324","Socjalna","18A","2B");
+
+        manageCustomer.addClient("901212d09123","Ewa","Brdoń",ad1);
 
 
     }
 
-    public Integer addClient(String pesel, String name, String lastname)
+    public Integer addClient(String pesel, String name, String lastname, Adress adress)
     {
         Session session = sessionFactory.openSession();
         Transaction tx =null;
@@ -36,7 +38,7 @@ public class ManageCustomer {
 
         try {
             tx = session.beginTransaction();
-            Client client = new Client(pesel, name, lastname, today);
+            Client client = new Client(pesel, name, lastname, today,adress);
             clientId = (Integer) session.save(client);
 
             tx.commit();

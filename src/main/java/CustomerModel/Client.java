@@ -18,17 +18,18 @@ public class Client {
     private  String lastName;
     @Column(name="dob")
     private Date dob;
-    @Transient
+    @Embedded
     private Adress adress;
     @Transient
     private List<Account> accountslist;
 
-    public Client(String pesel, String firstName, String lastName, Date dob) {
+    public Client(String pesel, String firstName, String lastName, Date dob, Adress adress) {
         this.id=id;
         this.pesel = pesel;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
+        this.adress=adress;
 
     }
 
