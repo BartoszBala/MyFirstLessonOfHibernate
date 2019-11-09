@@ -24,7 +24,7 @@ public class ManageCustomer {
 
         Adress ad1 = new Adress("Poland", "Lodz","93-324","Socjalna","18A","2B");
 
-        manageCustomer.addClient("901212d09123","Ewa","Brdoń",ad1);
+        manageCustomer.addClient("791001109123","Maria","Limonkowska",ad1);
 
 
     }
