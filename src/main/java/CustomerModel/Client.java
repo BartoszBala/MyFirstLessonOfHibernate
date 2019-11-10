@@ -3,38 +3,51 @@ package CustomerModel;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
 @Entity
-@Table(name="Client")
+@Table(name = "client")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_client")
-    public  int id;
-    @Column(name="pesel")
+    @Column(name = "id_client")
+    public int id;
+    @Column(name = "pesel")
     private String pesel;
-    @Column(name="first_name")
+    @Column(name = "first_name")
     private String firstName;
-    @Column(name="last_name")
-    private  String lastName;
-    @Column(name="dob")
+    @Column(name = "last_name")
+    private String lastName;
+    @Column(name = "dob")
     private Date dob;
-    @Embedded
-    private Adress adress;
+    @ManyToOne
+    @JoinColumn(name = "address_id", nullable = false)
+    private Adress address;
+//    @Column(name = "address_id")
+//    private int address_id;
     @Transient
     private List<Account> accountslist;
 
-    public Client(String pesel, String firstName, String lastName, Date dob, Adress adress) {
-        this.id=id;
+    public Client(String pesel, String firstName, String lastName, Date dob, Adress address) {
+        this.id = id;
         this.pesel = pesel;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;
-        this.adress=adress;
+        this.address=address;
+//        this.address_id = address_id;
 
     }
 
     public Client() {
     }
+
+//    public int getAddress_id() {
+//        return address_id;
+//    }
+
+//    public void setAddress_id(int address_id) {
+//        this.address_id = address_id;
+//    }
 
     public void setId(int id) {
         this.id = id;
@@ -57,7 +70,7 @@ public class Client {
     }
 
     public void setAdress(Adress adress) {
-        this.adress = adress;
+        this.address = adress;
     }
 
     public void setAccountslist(List<Account> accountslist) {
@@ -86,7 +99,7 @@ public class Client {
     }
 
     public Adress getAdress() {
-        return adress;
+        return address;
     }
 
     public List<Account> getAccountslist() {
@@ -101,7 +114,7 @@ public class Client {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", dob=" + dob +
-                ", adress=" + adress +
+                ", adress=" + address +
                 ", accountslist=" + accountslist +
                 '}';
     }

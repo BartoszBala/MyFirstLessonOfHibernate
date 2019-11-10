@@ -32,6 +32,7 @@
 
         <mapping class="User"/>
         <mapping class="CustomerModel.Client"/>
+        <mapping class="CustomerModel.Adress"/>
         <mapping class="CustomerModel.ClientPassword"/>
 
     </session-factory>

@@ -1,8 +1,14 @@
 package CustomerModel;
 import javax.persistence.*;
+import java.util.Set;
 
-@Embeddable
+@Entity
+@Table(name="client_address")
 public class Adress {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="address_id")
+    private int id;
     @Column(name="country")
     private String country;
     @Column(name="city")
@@ -11,10 +17,13 @@ public class Adress {
     private String postCode;
     @Column(name="street")
     private String street;
-    @Column(name="numberOfResidance")
+    @Column(name="number_Residence")
     private String numberOfResidence;
-    @Column(name="numberOfApartment")
+    @Column(name="number_Apartment")
     private String numberOfAppartment;
+    @OneToMany
+    @JoinColumn(name = "address_id")
+    private Set<Client> clients;
 
     public Adress() {
     }
@@ -75,6 +84,16 @@ public class Adress {
     public void setNumberOfAppartment(String numberOfAppartment) {
         this.numberOfAppartment = numberOfAppartment;
     }
+
+    public Set<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(Set<Client> clients) {
+        this.clients = clients;
+    }
+
+
 
     @Override
     public String toString() {
