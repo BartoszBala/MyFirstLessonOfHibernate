@@ -1,9 +1,6 @@
 package CustomerModel;
 
-import org.jetbrains.annotations.NotNull;
-
 import javax.persistence.*;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -22,7 +19,7 @@ public class Client {
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "dob")
-    private Date registryDay;
+    private Date dateOfBirth;
     @ManyToOne
     @JoinColumn(name = "address_id", nullable = false)
     private Adress address;
@@ -31,12 +28,12 @@ public class Client {
     @Transient
     private List<Account> accountslist;
 
-    public Client(String pesel, String firstName, String lastName, Date registryDay, Adress address) {
+    public Client(String pesel, String firstName, String lastName, Date dateOfBirth, Adress address) {
         this.id = id;
         this.pesel = pesel;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.registryDay = registryDay;
+        this.dateOfBirth = dateOfBirth;
         this.address=address;
 //        this.address_id = address_id;
 
@@ -69,8 +66,8 @@ public class Client {
         this.lastName = lastName;
     }
 
-    public void setRegistryDay(Date dob) {
-        this.registryDay = dob;
+    public void setDateOfBirth(Date dob) {
+        this.dateOfBirth = dob;
     }
 
     public void setAdress(Adress adress) {
@@ -98,8 +95,8 @@ public class Client {
         return lastName;
     }
 
-    public Date getRegistryDay() {
-        return registryDay;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
     public Adress getAdress() {
@@ -117,7 +114,7 @@ public class Client {
                 ", pesel='" + pesel + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", dob=" + registryDay +
+                ", dob=" + dateOfBirth +
                 ", adress=" + address +
                 ", accountslist=" + accountslist +
                 '}';
@@ -132,14 +129,14 @@ public class Client {
                 Objects.equals(pesel, client.pesel) &&
                 Objects.equals(firstName, client.firstName) &&
                 Objects.equals(lastName, client.lastName) &&
-                Objects.equals(registryDay, client.registryDay) &&
+                Objects.equals(dateOfBirth, client.dateOfBirth) &&
                 Objects.equals(address, client.address) &&
                 Objects.equals(accountslist, client.accountslist);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, pesel, firstName, lastName, registryDay, address, accountslist);
+        return Objects.hash(id, pesel, firstName, lastName, dateOfBirth, address, accountslist);
     }
 
 

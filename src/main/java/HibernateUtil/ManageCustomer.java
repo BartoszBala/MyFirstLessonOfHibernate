@@ -9,13 +9,17 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ManageCustomer {
 
     public static SessionFactory sessionFactory;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         try {
             sessionFactory = new Configuration().configure().buildSessionFactory();
         } catch (Throwable ex) {
@@ -29,7 +33,7 @@ public class ManageCustomer {
 
 //      manageCustomer.addClient("891001109123","Dominika","Lewandowska");
 
-        // manageCustomer.addClientwithAddress("680112850201", "Teresa", "Kobierzycka", "polska", "Tarnów", "68-300", "Podgórze", "2", null, "81052678900", "Tomasz", "Tomala");
+         manageCustomer.addClientwithAddress("680112850201", "Teresa", "Kobierzycka", "polska", "Tarnów", "68-300", "Podgórze", "2", null, "81052678900", "Tomasz", "Tomala");
 
 
 //        List<Client> clients = createClientList();
@@ -56,6 +60,14 @@ public class ManageCustomer {
         System.out.println("Lista klientów po miescie malejaca");
         manageCustomer.fetchClientOrderByCityDESC()
                 .stream().forEach(x -> System.out.println(x));
+
+        manageCustomer.addAddress("Polska", "Zamość", "80-120", "Wschodnia", "1", "2a");
+
+        System.out.println("lista klientów urodzonych po 1995");
+        manageCustomer.fetchClientBornAfter("1995-01-01").stream().forEach(x -> System.out.println(x));
+
+        System.out.println("lista peseli");
+        manageCustomer.fetchPesel().stream().forEach(x -> System.out.println(x));
     }
 
     public List<Object[]> fetchClientFirstNameLastNameCity() {
@@ -120,6 +132,7 @@ public class ManageCustomer {
 
         return clientsByCity;
     }
+
     public List<Client> fetchClientOrderByCityDESC() {
         Session session = sessionFactory.openSession();
         Transaction tx = null;
@@ -168,6 +181,30 @@ public class ManageCustomer {
         return clientsByName;
     }
 
+    public List<Client> fetchClientBornAfter(String date) throws ParseException {
+        Session session = sessionFactory.openSession();
+        Transaction tx;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date1 = simpleDateFormat.parse(date);
+        List<Client> clientsbornAfterDate = Collections.EMPTY_LIST;
+
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery("select client From Client client where client.dateOfBirth>:date1");
+            query.setParameter("date1", date1);
+
+            clientsbornAfterDate = query.list();
+
+
+            tx.commit();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+        }
+
+        return clientsbornAfterDate;
+    }
+
 
     public static List<Client> addClientList() {
         Scanner scanner = new Scanner(System.in);
@@ -183,7 +220,7 @@ public class ManageCustomer {
             client.setFirstName(scanner.nextLine());
             System.out.println("pesel");
             client.setPesel(scanner.nextLine());
-            client.setRegistryDay(date);
+            client.setDateOfBirth(date);
             clients.add(client);
             System.out.println("czy konczymy");
             String decyzja = scanner.nextLine();
@@ -192,6 +229,31 @@ public class ManageCustomer {
         }
 
         return clients;
+    }
+
+    public List<String> fetchPesel() {
+        Session session = sessionFactory.openSession();
+        Transaction tx;
+        List<String> peselList = Collections.EMPTY_LIST;
+        List<String> peselListnew = Collections.EMPTY_LIST;
+
+        try {
+            tx = session.beginTransaction();
+            Query query = session.createQuery("select client.pesel from Client client");
+
+            peselList = query.list(); //fixme lista peselow 10 znaków
+            System.out.println(peselList.size());
+
+            peselListnew = peselList.stream().map(x -> x.substring(0, 10)).collect(Collectors.toList());
+
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return peselListnew;
+
     }
 
 
@@ -253,14 +315,14 @@ public class ManageCustomer {
             client.setFirstName(name);
             client.setLastName(lastname);
             client.setPesel(pesel);
-            client.setRegistryDay(date);
+            client.setDateOfBirth(date);
 
 
             Client client1 = new Client();
             client1.setFirstName(name1);
             client1.setLastName(lastname1);
             client1.setPesel(pesel1);
-            client1.setRegistryDay(date);
+            client1.setDateOfBirth(date);
 
 
             Adress adress = new Adress(country, city, postcode, street, no1, no2);
@@ -361,6 +423,29 @@ public class ManageCustomer {
         }
         return clientId;
 
+    }
+
+    public void addAddress(String country, String city, String postcode, String street, String noOfResidance, String noOfApartmnet) {
+        Session session = sessionFactory.openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+
+            Adress adress = new Adress(country, city, postcode, street, noOfResidance, noOfApartmnet);
+
+            session.save(adress);
+
+            transaction.commit();
+
+        } catch (HibernateException e) {
+            if (transaction != null) transaction.rollback();
+
+            e.printStackTrace();
+
+        } finally {
+            session.close();
+        }
     }
 
 

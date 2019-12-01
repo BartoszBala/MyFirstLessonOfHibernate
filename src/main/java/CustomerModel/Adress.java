@@ -1,5 +1,7 @@
 package CustomerModel;
 import javax.persistence.*;
+import java.beans.IntrospectionException;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -35,6 +37,10 @@ public class Adress {
         this.street = street;
         this.numberOfResidence = numberOfResidence;
         this.numberOfAppartment = numberOfAppartment;
+
+        Set<Integer> secik = new HashSet<>();
+
+
     }
 
     public String getCountry() {
